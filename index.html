@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ingalls THE FLOOR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --stage:#080417; --cyan:#22E6FF; --magenta:#FF2D95; --gold:#FFC53D; --lime:#8CFF45;
+    --violet:#B36BFF; --ink:#F3ECFF; --dim:#A48FD0; --line:rgba(255,255,255,.12);
+    --display:'Bungee','Arial Black',system-ui,sans-serif;
+    --body:'Outfit',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;min-height:100%}
+  body{
+    background:
+      radial-gradient(900px 500px at 50% -10%, #3A1170 0%, transparent 60%),
+      radial-gradient(700px 400px at 10% 110%, #06283D 0%, transparent 55%),
+      var(--stage);
+    color:var(--ink);font-family:var(--body);-webkit-tap-highlight-color:transparent;overflow-x:hidden;
+  }
+  button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+  button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+
+  .wrap{max-width:860px;margin:0 auto;padding:14px 16px 40px;position:relative;z-index:3}
+  .screen{display:none;animation:fade .25s ease both}
+  .screen.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .marquee{text-align:center;padding:18px 0 8px}
+  .eyebrow{font-family:var(--display);font-size:clamp(14px,4.4vw,21px);letter-spacing:.3em;color:var(--gold);text-shadow:0 0 18px rgba(255,197,61,.55)}
+  .bigtitle{font-family:var(--display);line-height:.9;margin:6px 0 0;font-size:clamp(50px,15vw,112px);color:#fff;
+    text-shadow:0 0 8px rgba(34,230,255,.9),0 0 34px rgba(255,45,149,.65),0 8px 0 #2A0F4F}
+  .tagline{color:var(--dim);margin:14px auto 0;max-width:36ch;font-size:16px}
+  .bulbs{display:flex;gap:8px;justify-content:center;margin:14px 0 0}
+  .bulbs i{width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold);animation:chase 1.4s linear infinite}
+  .bulbs i:nth-child(2){animation-delay:.2s}.bulbs i:nth-child(3){animation-delay:.4s}
+  .bulbs i:nth-child(4){animation-delay:.6s}.bulbs i:nth-child(5){animation-delay:.8s}
+  .bulbs i:nth-child(6){animation-delay:1s}.bulbs i:nth-child(7){animation-delay:1.2s}
+  @keyframes chase{0%,60%{opacity:.2;transform:scale(.8)}30%{opacity:1;transform:scale(1.25)}}
+
+  .btn{display:block;width:100%;padding:18px 20px;border-radius:18px;font-family:var(--display);
+    font-size:clamp(18px,5vw,26px);letter-spacing:.04em;text-align:center;
+    background:linear-gradient(180deg,#FF52AC,#D6127A);box-shadow:0 6px 0 #7C0844,0 14px 30px rgba(255,45,149,.35);
+    transition:transform .08s ease,box-shadow .08s ease}
+  .btn:active{transform:translateY(5px);box-shadow:0 1px 0 #7C0844}
+  .btn.cyan{background:linear-gradient(180deg,#5CF2FF,#00B6D4);box-shadow:0 6px 0 #04606F,0 14px 30px rgba(34,230,255,.3);color:#04222A}
+  .btn.gold{background:linear-gradient(180deg,#FFD873,#E9A100);box-shadow:0 6px 0 #7A5400,0 14px 30px rgba(255,197,61,.3);color:#2A1B00}
+  .btn.ghost{background:rgba(255,255,255,.06);border:1px solid var(--line);box-shadow:none;font-size:16px;padding:14px;font-family:var(--body);font-weight:800;letter-spacing:.06em}
+  .btn.ghost:active{transform:translateY(2px)}
+  .btn[disabled]{opacity:.45;pointer-events:none}
+  .btn.danger{color:var(--magenta);border-color:var(--magenta)}
+  .stack{display:grid;gap:12px;margin-top:24px}
+
+  h2.sect{font-family:var(--display);font-size:clamp(23px,7vw,36px);margin:6px 0 4px;text-align:center}
+  p.sub{color:var(--dim);text-align:center;margin:0 0 18px;font-size:15px}
+  .note{font-size:12px;color:var(--dim);text-align:center;margin-top:10px}
+
+  /* players */
+  .players{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .pcard{position:relative;border-radius:20px;padding:16px 12px 14px;text-align:center;
+    background:rgba(255,255,255,.05);border:2px solid var(--line);
+    transition:transform .12s ease,border-color .12s ease,background .12s ease}
+  .pcard.wide{grid-column:1/-1}
+  .pcard .av{font-size:34px;line-height:1}
+  .pcard .nm{font-family:var(--display);font-size:19px;margin-top:6px}
+  .pcard .st{font-size:11px;color:var(--dim);letter-spacing:.14em;margin-top:3px;text-transform:uppercase}
+  .pcard.in{background:rgba(255,255,255,.1);transform:translateY(-3px)}
+  .pcard .tick{position:absolute;top:8px;right:10px;font-size:17px;opacity:0;transition:opacity .12s}
+  .pcard.in .tick{opacity:1}
+  .lvlbtn{margin-top:10px;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+    padding:7px 11px;border-radius:99px;border:1px solid var(--line);background:rgba(0,0,0,.3)}
+  .guestname{margin-top:10px;width:100%;padding:9px 11px;border-radius:12px;background:rgba(0,0,0,.3);
+    border:1px solid var(--line);color:var(--ink);font-family:var(--body);font-weight:700;font-size:14px;text-align:center}
+  .guestname::placeholder{color:#7A6AA8}
+
+  /* categories */
+  .cats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:6px}
+  @media(min-width:620px){.cats{grid-template-columns:repeat(3,1fr)}}
+  .cat{border-radius:16px;padding:14px 10px;text-align:center;background:rgba(255,255,255,.05);
+    border:1px solid var(--line);transition:transform .1s ease,background .1s ease}
+  .cat:active{transform:scale(.96)}
+  .cat .ci{font-size:29px;display:block}
+  .cat .cn{font-family:var(--display);font-size:13px;margin-top:8px;line-height:1.25}
+  .cat .cc{font-size:11px;color:var(--dim);margin-top:4px}
+  .cat.taken{opacity:.38}
+
+  /* hud */
+  .hud{display:flex;align-items:center;gap:10px;justify-content:space-between;margin-bottom:10px}
+  .who{font-family:var(--display);font-size:clamp(15px,4.3vw,21px);display:flex;align-items:center;gap:8px}
+  .who .dot{width:12px;height:12px;border-radius:50%;flex:none}
+  .lvltag{font-family:var(--body);font-weight:800;font-size:9px;letter-spacing:.16em;padding:4px 8px;
+    border-radius:99px;border:1px solid var(--line);color:var(--dim);text-transform:uppercase}
+  .hud .rt{display:flex;gap:14px;align-items:baseline}
+  .stat{text-align:right}
+  .stat b{font-family:var(--mono);font-size:clamp(17px,5vw,23px);display:block;line-height:1}
+  .stat span{font-size:10px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+  .clockbar{height:12px;border-radius:99px;background:rgba(255,255,255,.09);overflow:hidden;border:1px solid var(--line)}
+  .clockbar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--lime),var(--gold),var(--magenta));transition:width .1s linear}
+  .clockbar.low i{background:var(--magenta);animation:pulse .5s steps(2) infinite}
+  @keyframes pulse{50%{opacity:.35}}
+  .dots{display:flex;gap:5px;justify-content:center;margin:12px 0 4px;flex-wrap:wrap}
+  .dots i{width:20px;height:6px;border-radius:99px;background:rgba(255,255,255,.14)}
+  .dots i.hit{background:var(--lime)}
+  .dots i.miss{background:var(--magenta)}
+  .dots i.now{background:#fff}
+
+  /* the picture card */
+  .card{position:relative;margin:8px auto 0;border-radius:26px;
+    background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.03));
+    border:1px solid var(--line);box-shadow:0 24px 60px rgba(0,0,0,.5);
+    display:grid;place-items:center;height:min(44vh,300px);overflow:hidden}
+  .card .art{font-size:clamp(84px,28vw,160px);line-height:1;filter:drop-shadow(0 12px 24px rgba(0,0,0,.55));
+    animation:slam .32s cubic-bezier(.2,1.6,.4,1) both}
+  .card img.photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:pop .4s ease both}
+  .card img.zoom{transform:scale(1.9)}
+  @keyframes slam{0%{transform:scale(1.7) rotate(-8deg);opacity:0}100%{transform:none;opacity:1}}
+  @keyframes pop{0%{opacity:0;transform:scale(1.08)}100%{opacity:1}}
+  .card .qno,.card .combo{position:absolute;top:10px;z-index:2;text-shadow:0 2px 8px #000}
+  .card .qno{left:14px;font-family:var(--mono);font-size:12px;color:#EADFFF;letter-spacing:.1em}
+  .card .combo{right:14px;font-family:var(--display);font-size:15px;color:var(--gold)}
+  .card.good{animation:goodflash .45s ease}
+  .card.bad{animation:badshake .4s ease}
+  @keyframes goodflash{0%,100%{box-shadow:0 24px 60px rgba(0,0,0,.5)}40%{box-shadow:0 0 0 6px var(--lime),0 0 70px rgba(140,255,69,.6)}}
+  @keyframes badshake{0%,100%{transform:translateX(0)}20%{transform:translateX(-11px)}40%{transform:translateX(11px)}60%{transform:translateX(-7px)}80%{transform:translateX(7px)}}
+  .reveal{text-align:center;font-family:var(--display);font-size:15px;min-height:20px;margin-top:8px;color:var(--dim)}
+  .reveal.good{color:var(--lime)}
+  .reveal.bad{color:var(--magenta)}
+
+  .answers{display:grid;gap:9px;margin-top:8px}
+  @media(min-width:560px){.answers{grid-template-columns:1fr 1fr}}
+  .ans{padding:14px;border-radius:15px;text-align:left;font-weight:800;font-size:16px;
+    background:rgba(255,255,255,.07);border:1px solid var(--line);display:flex;align-items:center;gap:11px;
+    transition:transform .08s,background .12s}
+  .ans:active{transform:scale(.98)}
+  .ans .k{font-family:var(--mono);font-size:11px;color:var(--dim);border:1px solid var(--line);border-radius:7px;padding:3px 6px;flex:none}
+  .ans.right{background:linear-gradient(180deg,#A6FF6B,#5FD41B);color:#0C2500;border-color:transparent}
+  .ans.wrong{background:linear-gradient(180deg,#FF6BA4,#D6127A);color:#fff;border-color:transparent}
+  .ans[disabled]{cursor:default}
+
+  /* the floor */
+  .floorwrap{position:fixed;inset:auto 0 0 0;height:44vh;perspective:520px;perspective-origin:50% 0%;pointer-events:none;z-index:1;opacity:.85}
+  .floorgrid{position:absolute;left:-25%;right:-25%;top:0;bottom:-14%;transform:rotateX(66deg);transform-origin:50% 0%;
+    display:grid;grid-template-columns:repeat(10,1fr);grid-auto-rows:1fr;gap:3px}
+  .tile{background:rgba(255,255,255,.035);border-radius:3px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);transition:background .35s,box-shadow .35s}
+  .tile.lit{animation:capture .5s ease both}
+  @keyframes capture{0%{transform:scale(.4)}60%{transform:scale(1.15)}100%{transform:none}}
+  .vignette{position:fixed;inset:0;pointer-events:none;z-index:2;background:radial-gradient(120% 80% at 50% 40%,transparent 40%,rgba(4,1,12,.75) 100%)}
+
+  /* results */
+  .podium{display:grid;gap:12px;margin-top:8px}
+  .prow{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid var(--line)}
+  .prow .rank{font-family:var(--display);font-size:21px;width:32px;flex:none;text-align:center}
+  .prow .info{flex:1;min-width:0}
+  .prow .nm{font-family:var(--display);font-size:17px}
+  .prow .meta{font-size:12px;color:var(--dim);margin-top:2px}
+  .prow .pts{font-family:var(--mono);font-size:21px}
+  .prow.win{border-color:var(--gold);background:linear-gradient(90deg,rgba(255,197,61,.2),rgba(255,197,61,.04));box-shadow:0 0 40px rgba(255,197,61,.2)}
+  .bigscore{font-family:var(--display);font-size:clamp(54px,19vw,112px);text-align:center;line-height:.95;color:#fff;text-shadow:0 0 24px rgba(34,230,255,.6)}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 4px}
+  .kpi{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:16px;padding:12px;text-align:center}
+  .kpi b{font-family:var(--mono);font-size:19px;display:block}
+  .kpi span{font-size:10px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+  .missed{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+  .missed .chip{font-size:13px}
+
+  /* leaderboard */
+  .tabs{display:flex;gap:8px;justify-content:center;margin:0 0 14px;flex-wrap:wrap}
+  .tab{padding:9px 15px;border-radius:99px;border:1px solid var(--line);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+  .tab[aria-selected="true"]{background:var(--ink);color:#160B33;border-color:transparent}
+  .lb{display:grid;gap:8px}
+  .lrow{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.045);border:1px solid var(--line)}
+  .lrow .rk{font-family:var(--mono);font-size:14px;color:var(--dim);width:26px;flex:none}
+  .lrow .nm{font-family:var(--display);font-size:15px}
+  .lrow .meta{font-size:11px;color:var(--dim);margin-top:2px;line-height:1.5}
+  .lrow .big{margin-left:auto;font-family:var(--mono);font-size:18px;text-align:right;flex:none}
+  .lrow .big small{display:block;font-size:9px;letter-spacing:.14em;color:var(--dim);font-family:var(--body)}
+  .lrow.gold{border-color:var(--gold)}
+  .empty{text-align:center;color:var(--dim);padding:34px 16px;border:1px dashed var(--line);border-radius:18px}
+  .badge{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+    padding:2px 6px;border-radius:6px;border:1px solid currentColor;margin-left:4px}
+
+  /* builder */
+  .field{display:grid;gap:8px;margin-bottom:12px}
+  label.lb2{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+  input[type=text]{padding:13px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid var(--line);
+    color:var(--ink);font-family:var(--body);font-size:16px;font-weight:600;width:100%}
+  input[type=text]::placeholder{color:#7A6AA8}
+  .itemlist{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px}
+  .chip{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.07);
+    border:1px solid var(--line);font-size:14px;font-weight:700}
+  .chip .x{color:var(--magenta);font-family:var(--mono)}
+  .two{display:grid;grid-template-columns:88px 1fr;gap:8px}
+
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:9}
+  .shout{position:fixed;left:50%;top:36%;transform:translate(-50%,-50%);z-index:10;pointer-events:none;
+    font-family:var(--display);font-size:clamp(30px,10vw,66px);color:#fff;text-align:center;width:92%;
+    text-shadow:0 0 12px var(--cyan),0 0 40px var(--magenta),0 10px 0 #3B0F5C;opacity:0}
+  .shout.go{animation:shout .85s cubic-bezier(.2,1.5,.4,1) both}
+  @keyframes shout{0%{opacity:0;transform:translate(-50%,-50%) scale(.4) rotate(-12deg)}
+    25%{opacity:1;transform:translate(-50%,-50%) scale(1.08) rotate(-3deg)}70%{opacity:1}
+    100%{opacity:0;transform:translate(-50%,-58%) scale(1)}}
+
+  .topbar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding-bottom:4px}
+  .brandmini{font-family:var(--display);font-size:12px;letter-spacing:.18em;color:var(--gold)}
+  .tools{display:flex;gap:8px}
+  .iconbtn{border:1px solid var(--line);border-radius:12px;padding:7px 10px;font-size:14px;background:rgba(255,255,255,.05)}
+  .iconbtn.off{opacity:.4}
+  .foot{text-align:center;color:#6E5C9C;font-size:11px;margin-top:26px;letter-spacing:.1em}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  }
+</style>
+</head>
+<body>
+
+<div class="floorwrap" aria-hidden="true"><div class="floorgrid" id="floorgrid"></div></div>
+<div class="vignette" aria-hidden="true"></div>
+<canvas id="confetti"></canvas>
+<div class="shout" id="shout"></div>
+
+<div class="wrap">
+  <div class="topbar">
+    <div style="flex:1"></div>
+    <div class="tools">
+      <button class="iconbtn" id="photoBtn" title="Real photos on or off">📷</button>
+      <button class="iconbtn" id="soundBtn" title="Sound on or off">🔊</button>
+    </div>
+  </div>
+
+  <section class="screen on" id="s-home">
+    <div class="marquee">
+      <div class="eyebrow">INGALLS</div>
+      <h1 class="bigtitle">THE<br>FLOOR</h1>
+      <div class="bulbs"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <p class="tagline">Claim your field. Ten real photos, one clock, and no mercy for anybody.</p>
+    </div>
+    <div class="stack">
+      <button class="btn" id="goPlay">Start a game</button>
+      <button class="btn cyan" id="goBoard">Leaderboard</button>
+    </div>
+  </section>
+
+  <section class="screen" id="s-players">
+    <h2 class="sect">Who's playing?</h2>
+    <p class="sub">Tap a name to add them. Tap the level chip to change their difficulty.</p>
+    <div class="players" id="playerGrid"></div>
+    <div class="stack">
+      <button class="btn" id="toCats">Next: pick fields</button>
+      <button class="btn ghost back">Back</button>
+    </div>
+  </section>
+
+  <section class="screen" id="s-cats">
+    <h2 class="sect" id="catWho">Hazel, pick your field</h2>
+    <p class="sub" id="catSub">Choose the subject you know cold.</p>
+    <div class="cats" id="catGrid"></div>
+    <div class="stack"><button class="btn ghost" id="catBack">Back to players</button></div>
+  </section>
+
+  <section class="screen" id="s-ready">
+    <div class="marquee">
+      <div class="eyebrow" id="rdyEyebrow">UP NEXT</div>
+      <h1 class="bigtitle" id="rdyName" style="font-size:clamp(38px,12vw,80px)">HAZEL</h1>
+      <p class="tagline" id="rdyCat">Animals · 10 pictures · 60 seconds</p>
+      <p class="note" id="rdyLoad">Loading pictures…</p>
+    </div>
+    <div class="stack"><button class="btn gold" id="goStart" disabled>I'm ready</button></div>
+  </section>
+
+  <section class="screen" id="s-play">
+    <div class="hud">
+      <div class="who"><span class="dot" id="pDot"></span><span id="pName">HAZEL</span><span class="lvltag" id="pLvl">HARD</span></div>
+      <div class="rt">
+        <div class="stat"><b id="pScore">0</b><span>Points</span></div>
+        <div class="stat"><b id="pClock">60</b><span>Seconds</span></div>
+      </div>
+    </div>
+    <div class="clockbar" id="clockBar"><i id="clockFill"></i></div>
+    <div class="dots" id="dots"></div>
+    <div class="card" id="card">
+      <div class="qno" id="qno">01 / 10</div>
+      <div class="combo" id="combo"></div>
+      <div class="art" id="art">🦁</div>
+    </div>
+    <div class="reveal" id="reveal"></div>
+    <div class="answers" id="answers"></div>
+  </section>
+
+  <section class="screen" id="s-turn">
+    <p class="sub" id="turnWho" style="margin-bottom:0">HAZEL · ANIMALS</p>
+    <div class="bigscore" id="turnScore">0</div>
+    <p class="sub" id="turnLine">Points on the board.</p>
+    <div class="kpis">
+      <div class="kpi"><b id="turnHits">0/10</b><span>Correct</span></div>
+      <div class="kpi"><b id="turnStreak">0</b><span>Best streak</span></div>
+      <div class="kpi"><b id="turnTime">0s</b><span>Time left</span></div>
+    </div>
+    <div class="missed" id="turnMissed"></div>
+    <div class="stack"><button class="btn" id="turnNext">Next player</button></div>
+  </section>
+
+  <section class="screen" id="s-final">
+    <div class="marquee" style="padding-bottom:0">
+      <div class="eyebrow" id="finEyebrow">WINNER</div>
+      <h1 class="bigtitle" id="finName" style="font-size:clamp(38px,12vw,80px)">HAZEL</h1>
+    </div>
+    <div class="podium" id="finPodium"></div>
+    <div class="stack">
+      <button class="btn gold" id="finAgain">Play again</button>
+      <button class="btn cyan" id="finBoard">See leaderboard</button>
+      <button class="btn ghost" id="finHome">Home</button>
+    </div>
+  </section>
+
+  <section class="screen" id="s-board">
+    <h2 class="sect">Leaderboard</h2>
+    <p class="sub">Every turn ever played in this house.</p>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="score" aria-selected="true">Top scores</button>
+      <button class="tab" role="tab" data-tab="streak" aria-selected="false">Best streaks</button>
+      <button class="tab" role="tab" data-tab="player" aria-selected="false">By player</button>
+    </div>
+    <div class="lb" id="lbList"></div>
+    <div class="stack">
+      <button class="btn cyan back">Back</button>
+      <button class="btn ghost danger" id="lbClear">Clear the leaderboard</button>
+    </div>
+  </section>
+
+</div>
+<script>
+/* ============================================================
+   Ingalls THE FLOOR — v3
+   a = emoji fallback (null = photo only) · n = answer
+   t = tier (1 easy / 2 medium / 3 hard) · w = Wikipedia title
+   ============================================================ */
+const CATEGORIES = [
+{id:'animals',name:'Animals',icon:'🦁',items:[
+ {a:'🐘',n:'Elephant',t:1},{a:'🦒',n:'Giraffe',t:1},{a:'🐧',n:'Penguin',t:1},{a:'🦁',n:'Lion',t:1},
+ {a:'🐨',n:'Koala',t:1},{a:'🦘',n:'Kangaroo',t:1},{a:'🦉',n:'Owl',t:1},{a:'🦓',n:'Zebra',t:1},
+ {a:null,n:'Hippopotamus',t:1},{a:null,n:'Raccoon',t:1},{a:null,n:'Moose',t:1},{a:null,n:'Bison',t:1},
+ {a:'🦥',n:'Sloth',t:2},{a:'🦏',n:'Rhinoceros',t:2},{a:'🐆',n:'Leopard',t:2},{a:'🦔',n:'Hedgehog',t:2},
+ {a:'🐫',n:'Camel',t:2},{a:'🦡',n:'Badger',t:2},{a:'🦇',n:'Bat',t:2},{a:'🐗',n:'Wild boar',t:2},
+ {a:null,n:'Lynx',t:2},{a:null,n:'Porcupine',t:2},{a:null,n:'Skunk',t:2},{a:null,n:'Wolverine',t:2},
+ {a:null,n:'Okapi',t:3},{a:null,n:'Axolotl',t:3},{a:null,n:'Pangolin',t:3},{a:null,n:'Tapir',t:3},
+ {a:null,n:'Capybara',t:3},{a:null,n:'Wombat',t:3},{a:null,n:'Meerkat',t:3},{a:null,n:'Aardvark',t:3},
+ {a:null,n:'Fossa',t:3,w:'Fossa (animal)'},{a:null,n:'Binturong',t:3},{a:null,n:'Quokka',t:3},{a:null,n:'Markhor',t:3},
+ {a:null,n:'Saiga antelope',t:3},{a:null,n:'Serval',t:3},{a:null,n:'Kinkajou',t:3},{a:null,n:'Dik-dik',t:3}]},
+
+{id:'sharks',name:'Sharks',icon:'🦈',items:[
+ {a:'🦈',n:'Great white shark',t:1},{a:null,n:'Hammerhead shark',t:1},{a:null,n:'Whale shark',t:1},
+ {a:null,n:'Tiger shark',t:1},{a:null,n:'Bull shark',t:1},{a:null,n:'Nurse shark',t:1},
+ {a:null,n:'Basking shark',t:1},{a:null,n:'Mako shark',t:1,w:'Shortfin mako shark'},
+ {a:null,n:'Blue shark',t:2},{a:null,n:'Lemon shark',t:2},{a:null,n:'Blacktip reef shark',t:2},
+ {a:null,n:'Thresher shark',t:2},{a:null,n:'Zebra shark',t:2},{a:null,n:'Sand tiger shark',t:2},
+ {a:null,n:'Spiny dogfish',t:2},{a:null,n:'Greenland shark',t:2},{a:null,n:'Leopard shark',t:2},
+ {a:null,n:'Goblin shark',t:3},{a:null,n:'Frilled shark',t:3},{a:null,n:'Megamouth shark',t:3},
+ {a:null,n:'Cookiecutter shark',t:3},{a:null,n:'Angelshark',t:3},{a:null,n:'Wobbegong',t:3},
+ {a:null,n:'Sawshark',t:3},{a:null,n:'Epaulette shark',t:3},{a:null,n:'Port Jackson shark',t:3},
+ {a:null,n:'Bonnethead',t:3},{a:null,n:'Oceanic whitetip shark',t:3},{a:null,n:'Horn shark',t:3},
+ {a:null,n:'Salmon shark',t:3},{a:null,n:'Swell shark',t:3},{a:null,n:'Bramble shark',t:3}]},
+
+{id:'dogs',name:'Dogs',icon:'🐕',items:[
+ {a:'🐕',n:'Golden Retriever',t:1},{a:null,n:'Labrador Retriever',t:1},{a:null,n:'German Shepherd',t:1},
+ {a:'🌭',n:'Dachshund',t:1},{a:null,n:'Siberian Husky',t:1},{a:null,n:'Pug',t:1},
+ {a:null,n:'Beagle',t:1},{a:'🐩',n:'Poodle',t:1},
+ {a:null,n:'Pembroke Welsh Corgi',t:2},{a:null,n:'Border Collie',t:2},{a:null,n:'Dalmatian',t:2,w:'Dalmatian (dog)'},
+ {a:null,n:'Chihuahua',t:2,w:'Chihuahua (dog breed)'},{a:null,n:'Great Dane',t:2},{a:null,n:'Bulldog',t:2},
+ {a:null,n:'Shih Tzu',t:2},{a:null,n:'Saint Bernard',t:2,w:'St. Bernard (dog breed)'},
+ {a:null,n:'Basset Hound',t:2},{a:null,n:'Australian Shepherd',t:2},
+ {a:null,n:'Basenji',t:3},{a:null,n:'Xoloitzcuintli',t:3},{a:null,n:'Komondor',t:3},
+ {a:null,n:'Vizsla',t:3},{a:null,n:'Bergamasco Shepherd',t:3},{a:null,n:'Azawakh',t:3},
+ {a:null,n:'Bedlington Terrier',t:3},{a:null,n:'Chinese Crested Dog',t:3},{a:null,n:'Otterhound',t:3},
+ {a:null,n:'Affenpinscher',t:3},{a:null,n:'Bloodhound',t:3},{a:null,n:'Leonberger',t:3},
+ {a:null,n:'Shiba Inu',t:3},{a:null,n:'Papillon',t:3,w:'Papillon dog'}]},
+
+{id:'dinos',name:'Dinosaurs',icon:'🦖',items:[
+ {a:'🦖',n:'Tyrannosaurus rex',t:1,w:'Tyrannosaurus'},{a:null,n:'Triceratops',t:1},{a:null,n:'Stegosaurus',t:1},
+ {a:null,n:'Velociraptor',t:1},{a:'🦕',n:'Brachiosaurus',t:1},{a:null,n:'Spinosaurus',t:1},
+ {a:null,n:'Ankylosaurus',t:1},{a:null,n:'Pteranodon',t:1},
+ {a:null,n:'Allosaurus',t:2},{a:null,n:'Diplodocus',t:2},{a:null,n:'Parasaurolophus',t:2},
+ {a:null,n:'Iguanodon',t:2},{a:null,n:'Pachycephalosaurus',t:2},{a:null,n:'Deinonychus',t:2},
+ {a:null,n:'Dilophosaurus',t:2},{a:null,n:'Apatosaurus',t:2},{a:null,n:'Archaeopteryx',t:2},
+ {a:null,n:'Therizinosaurus',t:3},{a:null,n:'Carnotaurus',t:3},{a:null,n:'Microraptor',t:3},
+ {a:null,n:'Giganotosaurus',t:3},{a:null,n:'Corythosaurus',t:3},{a:null,n:'Oviraptor',t:3},
+ {a:null,n:'Quetzalcoatlus',t:3},{a:null,n:'Baryonyx',t:3},{a:null,n:'Compsognathus',t:3},
+ {a:null,n:'Plesiosaurus',t:3},{a:null,n:'Styracosaurus',t:3},{a:null,n:'Gallimimus',t:3},
+ {a:null,n:'Sauropelta',t:3},{a:null,n:'Mosasaurus',t:3},{a:null,n:'Dimetrodon',t:3}]},
+
+{id:'birds',name:'Birds',icon:'🦜',items:[
+ {a:'🦅',n:'Bald eagle',t:1},{a:'🦩',n:'Flamingo',t:1},{a:'🦚',n:'Peacock',t:1,w:'Peafowl'},
+ {a:null,n:'Ostrich',t:1,w:'Common ostrich'},{a:'🦜',n:'Parrot',t:1},{a:null,n:'Toucan',t:1,w:'Toco toucan'},
+ {a:'🦢',n:'Swan',t:1,w:'Mute swan'},{a:'🦃',n:'Turkey',t:1,w:'Wild turkey'},
+ {a:null,n:'Atlantic puffin',t:2},{a:null,n:'Kingfisher',t:2,w:'Common kingfisher'},{a:null,n:'Hornbill',t:2},
+ {a:null,n:'Roadrunner',t:2,w:'Greater roadrunner'},{a:null,n:'Cassowary',t:2,w:'Southern cassowary'},
+ {a:null,n:'Great blue heron',t:2},{a:null,n:'Scarlet macaw',t:2},{a:null,n:'Pelican',t:2,w:'Brown pelican'},
+ {a:null,n:'Barn owl',t:2},{a:null,n:'Sandhill crane',t:2},
+ {a:null,n:'Shoebill',t:3},{a:null,n:'Hoatzin',t:3},{a:null,n:'Kakapo',t:3},
+ {a:null,n:'Secretarybird',t:3},{a:null,n:'Frigatebird',t:3,w:'Magnificent frigatebird'},
+ {a:null,n:'Resplendent quetzal',t:3},{a:null,n:'Kea',t:3},{a:null,n:'Lyrebird',t:3,w:'Superb lyrebird'},
+ {a:null,n:'Hoopoe',t:3,w:'Eurasian hoopoe'},{a:null,n:'Potoo',t:3},{a:null,n:'Marabou stork',t:3},
+ {a:null,n:'Sunbittern',t:3},{a:null,n:'Vulturine guineafowl',t:3},{a:null,n:'Tawny frogmouth',t:3}]},
+
+{id:'reptiles',name:'Reptiles',icon:'🐍',items:[
+ {a:'🐍',n:'King cobra',t:1},{a:null,n:'Rattlesnake',t:1},{a:'🦎',n:'Chameleon',t:1},
+ {a:null,n:'Komodo dragon',t:1},{a:null,n:'Green iguana',t:1},{a:'🐢',n:'Sea turtle',t:1},
+ {a:'🐊',n:'American alligator',t:1},{a:null,n:'Gecko',t:1,w:'Gecko'},
+ {a:null,n:'Boa constrictor',t:2},{a:null,n:'Burmese python',t:2},{a:null,n:'Coral snake',t:2},
+ {a:null,n:'Gila monster',t:2},{a:null,n:'Snapping turtle',t:2,w:'Common snapping turtle'},
+ {a:null,n:'Monitor lizard',t:2},{a:null,n:'Green anaconda',t:2},{a:null,n:'Skink',t:2},
+ {a:null,n:'Tortoise',t:2,w:'Galápagos tortoise'},{a:null,n:'Crocodile',t:2,w:'Nile crocodile'},
+ {a:null,n:'Tuatara',t:3},{a:null,n:'Gharial',t:3},{a:null,n:'Thorny devil',t:3},
+ {a:null,n:'Common basilisk',t:3},{a:null,n:'Boomslang',t:3},{a:null,n:'Frilled lizard',t:3,w:'Chlamydosaurus'},
+ {a:null,n:'Matamata',t:3},{a:null,n:'Caiman lizard',t:3,w:'Northern caiman lizard'},
+ {a:null,n:'Blue-tongued skink',t:3},{a:null,n:'Armadillo girdled lizard',t:3},
+ {a:null,n:'Eyelash viper',t:3},{a:null,n:'Leaf-tailed gecko',t:3,w:'Uroplatus'},
+ {a:null,n:'Alligator snapping turtle',t:3},{a:null,n:'Marine iguana',t:3}]},
+
+{id:'ocean',name:'Ocean Life',icon:'🐙',items:[
+ {a:'🐬',n:'Dolphin',t:1},{a:'🐳',n:'Whale',t:1,w:'Humpback whale'},{a:'🦀',n:'Crab',t:1},
+ {a:'🐙',n:'Octopus',t:1},{a:'🐚',n:'Seashell',t:1},{a:'🐠',n:'Clownfish',t:1},
+ {a:'🦭',n:'Seal',t:1,w:'Pinniped'},{a:null,n:'Walrus',t:1},
+ {a:'🦑',n:'Squid',t:2},{a:'🦞',n:'Lobster',t:2},{a:'🪼',n:'Jellyfish',t:2},{a:'🐡',n:'Pufferfish',t:2},
+ {a:'🦐',n:'Shrimp',t:2},{a:'🦦',n:'Sea otter',t:2},{a:'🪸',n:'Coral',t:2},{a:null,n:'Starfish',t:2},
+ {a:null,n:'Nudibranch',t:3},{a:null,n:'Manta ray',t:3},{a:null,n:'Narwhal',t:3},{a:null,n:'Cuttlefish',t:3},
+ {a:null,n:'Anglerfish',t:3},{a:null,n:'Sea urchin',t:3},{a:null,n:'Barnacle',t:3},{a:null,n:'Moray eel',t:3},
+ {a:null,n:'Horseshoe crab',t:3},{a:null,n:'Sea cucumber',t:3},{a:null,n:'Leafy seadragon',t:3},
+ {a:null,n:'Mantis shrimp',t:3},{a:null,n:'Dugong',t:3},{a:null,n:'Blue-ringed octopus',t:3}]},
+
+{id:'bugs',name:'Bugs',icon:'🐝',items:[
+ {a:'🐝',n:'Bee',t:1},{a:'🦋',n:'Butterfly',t:1},{a:'🐞',n:'Ladybug',t:1},{a:'🐜',n:'Ant',t:1},
+ {a:'🕷️',n:'Spider',t:1},{a:'🐛',n:'Caterpillar',t:1},{a:'🐌',n:'Snail',t:1},{a:'🦗',n:'Grasshopper',t:1},
+ {a:'🪲',n:'Beetle',t:2},{a:'🦟',n:'Mosquito',t:2},{a:'🦂',n:'Scorpion',t:2},{a:'🪳',n:'Cockroach',t:2},
+ {a:null,n:'Dragonfly',t:2},{a:null,n:'Moth',t:2},{a:null,n:'Centipede',t:2},{a:null,n:'Termite',t:2},
+ {a:null,n:'Praying mantis',t:3,w:'Mantis'},{a:null,n:'Cicada',t:3},{a:null,n:'Stick insect',t:3,w:'Phasmatodea'},
+ {a:null,n:'Weevil',t:3},{a:null,n:'Earwig',t:3},{a:null,n:'Firefly',t:3},{a:null,n:'Water strider',t:3},
+ {a:null,n:'Leafhopper',t:3},{a:null,n:'Aphid',t:3},{a:null,n:'Antlion',t:3},
+ {a:null,n:'Tarantula hawk',t:3},{a:null,n:'Orchid mantis',t:3,w:'Hymenopus coronatus'}]},
+
+{id:'food',name:'Snacks & Food',icon:'🍕',items:[
+ {a:'🍕',n:'Pizza',t:1},{a:'🍩',n:'Donut',t:1,w:'Doughnut'},{a:'🍔',n:'Hamburger',t:1},{a:'🌭',n:'Hot dog',t:1},
+ {a:'🍦',n:'Ice cream cone',t:1},{a:'🍿',n:'Popcorn',t:1},{a:'🍪',n:'Cookie',t:1},{a:'🥞',n:'Pancakes',t:1,w:'Pancake'},
+ {a:'🥨',n:'Pretzel',t:2},{a:'🍣',n:'Sushi',t:2},{a:'🥯',n:'Bagel',t:2},{a:'🧇',n:'Waffle',t:2},
+ {a:'🍜',n:'Ramen',t:2},{a:'🧁',n:'Cupcake',t:2},{a:'🌮',n:'Taco',t:2},{a:'🥐',n:'Croissant',t:2},
+ {a:null,n:'Baklava',t:3},{a:null,n:'Falafel',t:3},{a:null,n:'Empanada',t:3},{a:null,n:'Pierogi',t:3},
+ {a:null,n:'Churro',t:3},{a:null,n:'Macaron',t:3},{a:null,n:'Gnocchi',t:3},{a:null,n:'Beignet',t:3},
+ {a:null,n:'Shakshuka',t:3},{a:null,n:'Bibimbap',t:3},{a:null,n:'Pavlova',t:3},{a:null,n:'Arepa',t:3}]},
+
+{id:'produce',name:'Fruits & Veggies',icon:'🥕',items:[
+ {a:'🍎',n:'Apple',t:1},{a:'🍌',n:'Banana',t:1},{a:'🍇',n:'Grapes',t:1,w:'Grape'},{a:'🍓',n:'Strawberry',t:1},
+ {a:'🥕',n:'Carrot',t:1},{a:'🌽',n:'Corn',t:1,w:'Maize'},{a:'🥔',n:'Potato',t:1},{a:'🍉',n:'Watermelon',t:1},
+ {a:'🍍',n:'Pineapple',t:2},{a:'🥝',n:'Kiwi',t:2,w:'Kiwifruit'},{a:'🥭',n:'Mango',t:2},{a:'🥦',n:'Broccoli',t:2},
+ {a:'🥒',n:'Cucumber',t:2},{a:'🫑',n:'Bell pepper',t:2},{a:'🫐',n:'Blueberry',t:2},{a:'🍆',n:'Eggplant',t:2},
+ {a:null,n:'Dragon fruit',t:3,w:'Pitaya'},{a:null,n:'Rambutan',t:3},{a:null,n:'Kohlrabi',t:3},{a:null,n:'Persimmon',t:3},
+ {a:null,n:'Okra',t:3},{a:null,n:'Artichoke',t:3},{a:null,n:'Star fruit',t:3,w:'Carambola'},{a:null,n:'Lychee',t:3},
+ {a:null,n:'Romanesco',t:3,w:'Romanesco broccoli'},{a:null,n:'Jicama',t:3},{a:null,n:'Durian',t:3},{a:null,n:'Passion fruit',t:3,w:'Passiflora edulis'}]},
+
+{id:'sports',name:'Sports',icon:'🏀',items:[
+ {a:'🏀',n:'Basketball',t:1},{a:'⚽',n:'Soccer',t:1,w:'Association football'},{a:'🏈',n:'Football',t:1,w:'American football'},
+ {a:'⚾',n:'Baseball',t:1},{a:'🎾',n:'Tennis',t:1},{a:'🎳',n:'Bowling',t:1},{a:'🏊',n:'Swimming',t:1,w:'Swimming (sport)'},{a:'⛳',n:'Golf',t:1},
+ {a:'🏐',n:'Volleyball',t:2},{a:'🏓',n:'Table tennis',t:2},{a:'🥊',n:'Boxing',t:2},{a:'🏒',n:'Ice hockey',t:2},
+ {a:'🏹',n:'Archery',t:2},{a:'🤸',n:'Gymnastics',t:2},{a:'🏄',n:'Surfing',t:2},{a:'⛷️',n:'Skiing',t:2},
+ {a:null,n:'Cricket',t:3},{a:null,n:'Rugby',t:3,w:'Rugby football'},{a:null,n:'Fencing',t:3},
+ {a:null,n:'Curling',t:3},{a:null,n:'Lacrosse',t:3},{a:null,n:'Water polo',t:3},{a:null,n:'Pickleball',t:3},
+ {a:null,n:'Team handball',t:3,w:'Handball'},{a:null,n:'Polo',t:3},{a:null,n:'Sumo',t:3},
+ {a:null,n:'Biathlon',t:3},{a:null,n:'Bobsled',t:3,w:'Bobsleigh'}]},
+
+{id:'vehicles',name:'Things That Go',icon:'🚒',items:[
+ {a:'🚒',n:'Fire truck',t:1},{a:'🚌',n:'School bus',t:1},{a:'✈️',n:'Airplane',t:1},{a:'🚂',n:'Steam train',t:1,w:'Steam locomotive'},
+ {a:'🚲',n:'Bicycle',t:1},{a:'🚓',n:'Police car',t:1},{a:'🚑',n:'Ambulance',t:1},{a:'🚜',n:'Tractor',t:1},
+ {a:'🚁',n:'Helicopter',t:2},{a:'🏍️',n:'Motorcycle',t:2},{a:'⛵',n:'Sailboat',t:2},{a:'🛶',n:'Canoe',t:2},
+ {a:'🚛',n:'Semi truck',t:2,w:'Semi-trailer truck'},{a:'🚕',n:'Taxi',t:2},{a:'🚀',n:'Rocket',t:2},{a:'🚢',n:'Cruise ship',t:2},
+ {a:null,n:'Hovercraft',t:3},{a:null,n:'Airship',t:3},{a:null,n:'Monorail',t:3},{a:null,n:'Hot air balloon',t:3},
+ {a:null,n:'Snowmobile',t:3},{a:null,n:'Tugboat',t:3},{a:null,n:'Forklift',t:3},{a:null,n:'Bulldozer',t:3},
+ {a:null,n:'Unicycle',t:3},{a:null,n:'Funicular',t:3},{a:null,n:'Excavator',t:3},{a:null,n:'Zamboni',t:3,w:'Ice resurfacer'}]},
+
+{id:'space',name:'Outer Space',icon:'🚀',items:[
+ {a:'🚀',n:'Rocket',t:1},{a:'🌍',n:'Earth',t:1},{a:'🌕',n:'The moon',t:1,w:'Moon'},{a:'⭐',n:'Star',t:1},
+ {a:'☀️',n:'The sun',t:1,w:'Sun'},{a:'🧑‍🚀',n:'Astronaut',t:1},{a:'🔭',n:'Telescope',t:1},{a:'🛰️',n:'Satellite',t:1},
+ {a:'🪐',n:'Saturn',t:2},{a:'☄️',n:'Comet',t:2},{a:'🌌',n:'Galaxy',t:2},{a:'🌠',n:'Meteor',t:2},
+ {a:null,n:'Solar eclipse',t:2},{a:null,n:'Space Shuttle',t:2},{a:null,n:'Mars',t:2},{a:null,n:'Jupiter',t:2},
+ {a:null,n:'Nebula',t:3},{a:null,n:'Black hole',t:3},{a:null,n:'Supernova',t:3},{a:null,n:'Hubble Space Telescope',t:3},
+ {a:null,n:'Aurora',t:3},{a:null,n:'International Space Station',t:3},{a:null,n:'Milky Way',t:3},{a:null,n:'Asteroid',t:3},
+ {a:null,n:'Neptune',t:3},{a:null,n:'Uranus',t:3},{a:null,n:'Mars rover',t:3,w:'Curiosity (rover)'},{a:null,n:'Voyager probe',t:3,w:'Voyager 1'}]},
+
+{id:'flags',name:'Flags',icon:'🚩',items:[
+ {a:null,n:'United States',t:1,w:'Flag of the United States'},{a:null,n:'Canada',t:1,w:'Flag of Canada'},
+ {a:null,n:'Mexico',t:1,w:'Flag of Mexico'},{a:null,n:'Japan',t:1,w:'Flag of Japan'},
+ {a:null,n:'Brazil',t:1,w:'Flag of Brazil'},{a:null,n:'France',t:1,w:'Flag of France'},
+ {a:null,n:'Italy',t:1,w:'Flag of Italy'},{a:null,n:'United Kingdom',t:1,w:'Flag of the United Kingdom'},
+ {a:null,n:'Germany',t:2,w:'Flag of Germany'},{a:null,n:'India',t:2,w:'Flag of India'},
+ {a:null,n:'Australia',t:2,w:'Flag of Australia'},{a:null,n:'South Korea',t:2,w:'Flag of South Korea'},
+ {a:null,n:'Spain',t:2,w:'Flag of Spain'},{a:null,n:'Sweden',t:2,w:'Flag of Sweden'},
+ {a:null,n:'Argentina',t:2,w:'Flag of Argentina'},{a:null,n:'Jamaica',t:2,w:'Flag of Jamaica'},
+ {a:null,n:'Kenya',t:2,w:'Flag of Kenya'},{a:null,n:'Ireland',t:2,w:'Flag of Ireland'},
+ {a:null,n:'Nepal',t:3,w:'Flag of Nepal'},{a:null,n:'Bhutan',t:3,w:'Flag of Bhutan'},
+ {a:null,n:'South Africa',t:3,w:'Flag of South Africa'},{a:null,n:'Turkey',t:3,w:'Flag of Turkey'},
+ {a:null,n:'Vietnam',t:3,w:'Flag of Vietnam'},{a:null,n:'Peru',t:3,w:'Flag of Peru'},
+ {a:null,n:'Uruguay',t:3,w:'Flag of Uruguay'},{a:null,n:'Wales',t:3,w:'Flag of Wales'},
+ {a:null,n:'Egypt',t:3,w:'Flag of Egypt'},{a:null,n:'Portugal',t:3,w:'Flag of Portugal'},
+ {a:null,n:'Greece',t:3,w:'Flag of Greece'},{a:null,n:'Mongolia',t:3,w:'Flag of Mongolia'}]},
+
+{id:'landmarks',name:'Landmarks',icon:'🗽',items:[
+ {a:null,n:'Eiffel Tower',t:1},{a:null,n:'Statue of Liberty',t:1},{a:null,n:'Great Wall of China',t:1},
+ {a:null,n:'Big Ben',t:1},{a:null,n:'Colosseum',t:1},{a:null,n:'Leaning Tower of Pisa',t:1},
+ {a:null,n:'Golden Gate Bridge',t:1},{a:null,n:'Great Pyramid of Giza',t:1},
+ {a:null,n:'Taj Mahal',t:2},{a:null,n:'Mount Rushmore',t:2},{a:null,n:'Sydney Opera House',t:2},
+ {a:null,n:'Stonehenge',t:2},{a:null,n:'Christ the Redeemer',t:2,w:'Christ the Redeemer (statue)'},
+ {a:null,n:'Machu Picchu',t:2},{a:null,n:'Space Needle',t:2},{a:null,n:'Gateway Arch',t:2},
+ {a:null,n:'Petra',t:3},{a:null,n:'Angkor Wat',t:3},{a:null,n:'Chichen Itza',t:3,w:'Chichen Itza'},
+ {a:null,n:'Sagrada Familia',t:3,w:'Sagrada Família'},{a:null,n:'Neuschwanstein Castle',t:3},
+ {a:null,n:'Moai',t:3},{a:null,n:'Hagia Sophia',t:3},{a:null,n:"Saint Basil's Cathedral",t:3},
+ {a:null,n:'Mont-Saint-Michel',t:3},{a:null,n:'Uluru',t:3},{a:null,n:'Meteora',t:3},
+ {a:null,n:'Petronas Towers',t:3},{a:null,n:'Alhambra',t:3},{a:null,n:'Bagan',t:3}]},
+
+{id:'gems',name:'Rocks & Gems',icon:'💎',items:[
+ {a:'💎',n:'Diamond',t:1},{a:null,n:'Emerald',t:1},{a:null,n:'Ruby',t:1},{a:null,n:'Sapphire',t:1},
+ {a:null,n:'Gold',t:1},{a:null,n:'Amethyst',t:1},{a:null,n:'Quartz',t:1},{a:null,n:'Geode',t:1},
+ {a:null,n:'Obsidian',t:2},{a:null,n:'Opal',t:2},{a:null,n:'Turquoise',t:2},{a:null,n:'Jade',t:2},
+ {a:null,n:'Pyrite',t:2},{a:null,n:'Granite',t:2},{a:null,n:'Marble',t:2},{a:null,n:'Basalt',t:2},
+ {a:null,n:'Malachite',t:3},{a:null,n:'Labradorite',t:3},{a:null,n:'Azurite',t:3},{a:null,n:'Bismuth',t:3},
+ {a:null,n:'Fluorite',t:3},{a:null,n:'Rhodochrosite',t:3},{a:null,n:'Selenite',t:3,w:'Gypsum'},
+ {a:null,n:'Tourmaline',t:3},{a:null,n:'Peridot',t:3},{a:null,n:'Moldavite',t:3},
+ {a:null,n:'Chalcedony',t:3},{a:null,n:'Sulfur crystal',t:3,w:'Sulfur'},{a:null,n:'Celestine',t:3},{a:null,n:'Kyanite',t:3}]},
+
+{id:'music',name:'Music',icon:'🎸',items:[
+ {a:'🎸',n:'Guitar',t:1},{a:'🥁',n:'Drum kit',t:1},{a:'🎹',n:'Piano',t:1},{a:'🎺',n:'Trumpet',t:1},
+ {a:'🎻',n:'Violin',t:1},{a:'🎤',n:'Microphone',t:1},{a:'🎧',n:'Headphones',t:1},{a:null,n:'Flute',t:1},
+ {a:'🎷',n:'Saxophone',t:2},{a:'🪕',n:'Banjo',t:2},{a:'🪗',n:'Accordion',t:2},{a:null,n:'Cello',t:2},
+ {a:null,n:'Harp',t:2},{a:null,n:'Ukulele',t:2},{a:null,n:'Tambourine',t:2},{a:null,n:'Xylophone',t:2},
+ {a:null,n:'Bagpipes',t:3},{a:null,n:'Sitar',t:3},{a:null,n:'Theremin',t:3},{a:null,n:'Harpsichord',t:3},
+ {a:null,n:'Didgeridoo',t:3},{a:null,n:'Bassoon',t:3},{a:null,n:'Mandolin',t:3},{a:null,n:'Kalimba',t:3,w:'Mbira'},
+ {a:null,n:'French horn',t:3},{a:null,n:'Oboe',t:3},{a:null,n:'Hurdy-gurdy',t:3},{a:null,n:'Steel drum',t:3,w:'Steelpan'}]},
+
+{id:'jobs',name:'Jobs',icon:'👩‍🚒',items:[
+ {a:'👩‍🚒',n:'Firefighter',t:1},{a:'👮',n:'Police officer',t:1},{a:'🧑‍🍳',n:'Chef',t:1},{a:'🧑‍⚕️',n:'Doctor',t:1,w:'Physician'},
+ {a:'🧑‍🏫',n:'Teacher',t:1},{a:'🧑‍🌾',n:'Farmer',t:1},{a:'👷',n:'Construction worker',t:1},{a:'🧑‍🚀',n:'Astronaut',t:1},
+ {a:'🧑‍🔬',n:'Scientist',t:2},{a:'🧑‍⚖️',n:'Judge',t:2},{a:'🕵️',n:'Detective',t:2},{a:'🧑‍✈️',n:'Pilot',t:2,w:'Aviator'},
+ {a:'🧑‍🔧',n:'Mechanic',t:2},{a:null,n:'Dentist',t:2},{a:null,n:'Veterinarian',t:2},{a:null,n:'Lifeguard',t:2},
+ {a:null,n:'Blacksmith',t:3},{a:null,n:'Archaeologist',t:3,w:'Archaeology'},{a:null,n:'Cartographer',t:3,w:'Cartography'},
+ {a:null,n:'Beekeeper',t:3,w:'Beekeeping'},{a:null,n:'Glassblower',t:3,w:'Glassblowing'},{a:null,n:'Luthier',t:3},
+ {a:null,n:'Falconer',t:3,w:'Falconry'},{a:null,n:'Welder',t:3,w:'Welding'},{a:null,n:'Surveyor',t:3,w:'Surveying'},
+ {a:null,n:'Cooper',t:3,w:'Cooper (profession)'},{a:null,n:'Farrier',t:3},{a:null,n:'Lighthouse keeper',t:3}]},
+
+{id:'tools',name:'Tools & Gadgets',icon:'🔨',items:[
+ {a:'🔨',n:'Hammer',t:1},{a:'🪛',n:'Screwdriver',t:1},{a:'🔧',n:'Wrench',t:1},{a:'✂️',n:'Scissors',t:1},
+ {a:'🪜',n:'Ladder',t:1},{a:'🔑',n:'Key',t:1},{a:'💡',n:'Light bulb',t:1},{a:'🧹',n:'Broom',t:1},
+ {a:'🪚',n:'Saw',t:2},{a:'🧲',n:'Magnet',t:2},{a:null,n:'Pliers',t:2},{a:null,n:'Power drill',t:2,w:'Drill'},
+ {a:null,n:'Tape measure',t:2},{a:null,n:'Chisel',t:2},{a:null,n:'Spirit level',t:2},{a:null,n:'C-clamp',t:2},
+ {a:null,n:'Caliper',t:3},{a:null,n:'Awl',t:3,w:'Bradawl'},{a:null,n:'Rasp',t:3},{a:null,n:'Plumb bob',t:3},
+ {a:null,n:'Trowel',t:3},{a:null,n:'Mallet',t:3},{a:null,n:'Socket wrench',t:3},{a:null,n:'Anvil',t:3},
+ {a:null,n:'Bellows',t:3},{a:null,n:'Sextant',t:3},{a:null,n:'Pipe wrench',t:3},{a:null,n:'Drawknife',t:3}]},
+
+{id:'fantasy',name:'Monsters & Magic',icon:'🐉',items:[
+ {a:'🐉',n:'Dragon',t:1},{a:'🦄',n:'Unicorn',t:1},{a:'👻',n:'Ghost',t:1},{a:'🤖',n:'Robot',t:1},
+ {a:'🏰',n:'Castle',t:1},{a:'👑',n:'Crown',t:1},{a:'🗡️',n:'Sword',t:1},{a:'🧙',n:'Wizard',t:1},
+ {a:'🧜',n:'Mermaid',t:2},{a:'🧛',n:'Vampire',t:2},{a:'🧟',n:'Zombie',t:2},{a:'🧚',n:'Fairy',t:2},
+ {a:'🧞',n:'Genie',t:2,w:'Jinn'},{a:'🛡️',n:'Shield',t:2},{a:null,n:'Werewolf',t:2},{a:null,n:'Troll',t:2},
+ {a:null,n:'Griffin',t:3},{a:null,n:'Minotaur',t:3},{a:null,n:'Chimera',t:3,w:'Chimera (mythology)'},{a:null,n:'Centaur',t:3},
+ {a:null,n:'Kraken',t:3},{a:null,n:'Basilisk',t:3},{a:null,n:'Sphinx',t:3},{a:null,n:'Hydra',t:3,w:'Lernaean Hydra'},
+ {a:null,n:'Cerberus',t:3},{a:null,n:'Pegasus',t:3},{a:null,n:'Phoenix',t:3,w:'Phoenix (mythology)'},{a:null,n:'Yeti',t:3}]},
+
+{id:'feelings',name:'Feelings',icon:'😂',noPhoto:true,items:[
+ {a:'😂',n:'Laughing',t:1},{a:'😭',n:'Crying',t:1},{a:'😡',n:'Angry',t:1},{a:'😱',n:'Scared',t:1},
+ {a:'😴',n:'Sleepy',t:1},{a:'🥳',n:'Excited',t:1},{a:'😍',n:'In love',t:1},{a:'🤒',n:'Sick',t:1},
+ {a:'🤔',n:'Thinking',t:2},{a:'🤯',n:'Mind blown',t:2},{a:'🙄',n:'Annoyed',t:2},{a:'😬',n:'Nervous',t:2},
+ {a:'🥱',n:'Bored',t:2},{a:'😎',n:'Confident',t:2},{a:'😳',n:'Embarrassed',t:2},{a:'🤩',n:'Starstruck',t:2},
+ {a:'😏',n:'Smug',t:3},{a:'🤨',n:'Skeptical',t:3},{a:'😅',n:'Sheepish',t:3},{a:'😤',n:'Indignant',t:3},
+ {a:'😩',n:'Exasperated',t:3},{a:'😵‍💫',n:'Bewildered',t:3},{a:'😌',n:'Relieved',t:3},{a:'🤢',n:'Queasy',t:3},
+ {a:'😔',n:'Wistful',t:3},{a:'😐',n:'Indifferent',t:3},{a:'🫠',n:'Overwhelmed',t:3},{a:'😒',n:'Unimpressed',t:3}]},
+
+{id:'nature',name:'Weather & Nature',icon:'🌈',items:[
+ {a:'🌈',n:'Rainbow',t:1},{a:'❄️',n:'Snowflake',t:1},{a:'🔥',n:'Fire',t:1},{a:'⚡',n:'Lightning',t:1},
+ {a:'☁️',n:'Cloud',t:1},{a:'🌋',n:'Volcano',t:1},{a:'🗻',n:'Mountain',t:1},{a:'🌴',n:'Palm tree',t:1},
+ {a:'🌪️',n:'Tornado',t:2},{a:'🌵',n:'Cactus',t:2},{a:'🍁',n:'Maple leaf',t:2},{a:'🍄',n:'Mushroom',t:2},
+ {a:'🌻',n:'Sunflower',t:2},{a:'🌾',n:'Wheat',t:2},{a:'🌊',n:'Ocean wave',t:2,w:'Wind wave'},{a:null,n:'Glacier',t:2},
+ {a:null,n:'Lenticular cloud',t:3},{a:null,n:'Geyser',t:3},{a:null,n:'Fjord',t:3},{a:null,n:'Stalactite',t:3},
+ {a:null,n:'Aurora',t:3},{a:null,n:'Sand dune',t:3,w:'Dune'},{a:null,n:'Waterspout',t:3},{a:null,n:'Hoodoo',t:3,w:'Hoodoo (geology)'},
+ {a:null,n:'Mangrove',t:3},{a:null,n:'Sinkhole',t:3},{a:null,n:'Salt flat',t:3,w:'Salt pan (geology)'},{a:null,n:'Supercell',t:3}]}
+];
+
+const LEVELS = {
+  easy:   {label:'Easy',   choices:3, clock:75, penalty:0, mult:1,   mix:[1,1,1,1,1,1,1,2,2,2], color:'#8CFF45'},
+  medium: {label:'Medium', choices:4, clock:60, penalty:3, mult:1.3, mix:[1,1,1,2,2,2,2,2,3,3], color:'#22E6FF'},
+  hard:   {label:'Hard',   choices:5, clock:50, penalty:4, mult:1.7, mix:[2,2,3,3,3,3,3,3,3,3], color:'#FFC53D'},
+  expert: {label:'Expert', choices:6, clock:40, penalty:5, mult:2.2, mix:[3,3,3,3,3,3,3,3,3,3], zoom:true, color:'#FF2D95'}
+};
+const LEVEL_ORDER = ['easy','medium','hard','expert'];
+
+const ROSTER = [
+  {name:'Hazel',        color:'#FF2D95', av:'🦄', level:'hard'},
+  {name:'Lincoln',      color:'#22E6FF', av:'🐺', level:'medium'},
+  {name:'Lane',         color:'#8CFF45', av:'🐸', level:'easy'},
+  {name:'Dad',          color:'#FFC53D', av:'🦖', level:'hard'},
+  {name:'Someone Else', color:'#B36BFF', av:'🎭', level:'hard', guest:true}
+];
+
+/* ---------- storage (artifact storage, memory fallback) ---------- */
+const MEM = {};
+const KEY_SCORES = 'ingalls_floor:scores_v2';
+const KEY_LEVELS = 'ingalls_floor:levels_v2';
+const store = {
+  async get(key){
+    try{ if(window.storage){ const r = await window.storage.get(key,false); return r ? JSON.parse(r.value) : null; } }
+    catch(e){}
+    return MEM[key] !== undefined ? MEM[key] : null;
+  },
+  async set(key,val){
+    MEM[key] = val;
+    try{ if(window.storage) await window.storage.set(key, JSON.stringify(val), false); }
+    catch(e){ console.warn('save failed, keeping in memory', e); }
+  }
+};
+
+const ROUND_LEN = 10;
+const SHOUTS = ['NAILED IT!','BOOM!','GOT IT!','TOO EASY!','LOCKED IN!','YES!','CLEAN!'];
+
+let scores = [], selected = [], levels = {};
+let game = null, turn = null, tickHandle = null;
+let soundOn = true, photoMode = true, photosWorking = null, readyFallback = false;
+const photoCache = new Map();
+
+const $ = id => document.getElementById(id);
+const shuffle = a => { const c=a.slice(); for(let i=c.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[c[i],c[j]]=[c[j],c[i]];} return c; };
+const fieldById = id => CATEGORIES.find(c=>c.id===id);
+const emojiCount = f => f.items.filter(i=>i.a).length;
+const needsPhotos = f => !f.noPhoto && emojiCount(f) < 10;
+const levelOf = name => levels[name] || (ROSTER.find(r=>r.name===name)||{}).level || 'medium';
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on', s.id===id));
+  window.scrollTo(0,0);
+}
+
+/* ---------- sound ---------- */
+let ac = null;
+function beep(freq,dur,type,vol){
+  if(!soundOn) return;
+  try{
+    ac = ac || new (window.AudioContext||window.webkitAudioContext)();
+    const o=ac.createOscillator(), g=ac.createGain();
+    o.type=type||'triangle'; o.frequency.value=freq; g.gain.value=vol||0.07;
+    o.connect(g); g.connect(ac.destination);
+    const t=ac.currentTime;
+    g.gain.setValueAtTime(g.gain.value,t);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+(dur||0.15));
+    o.start(t); o.stop(t+(dur||0.15)+0.02);
+  }catch(e){}
+}
+const sfxGood = n => { beep(440+n*60,.1,'triangle'); setTimeout(()=>beep(660+n*70,.16,'triangle'),80); };
+const sfxBad  = () => beep(190,.22,'sawtooth',.05);
+const sfxHorn = () => [523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,.22,'square',.05), i*110));
+
+/* ---------- the floor ---------- */
+function buildFloor(){
+  const g=$('floorgrid'); g.innerHTML='';
+  for(let i=0;i<60;i++){ const d=document.createElement('div'); d.className='tile'; g.appendChild(d); }
+}
+function resetFloor(){ document.querySelectorAll('.tile').forEach(t=>{ t.className='tile'; t.style.background=''; t.style.boxShadow=''; }); }
+function captureTile(color){
+  const open=[...document.querySelectorAll('.tile:not(.lit)')];
+  if(!open.length) return;
+  const t=open[Math.random()*open.length|0];
+  t.classList.add('lit'); t.style.background=color; t.style.boxShadow='0 0 18px '+color;
+}
+
+/* ---------- confetti ---------- */
+const cvs=$('confetti'), ctx=cvs.getContext('2d');
+let parts=[], rafId=null;
+const sizeCanvas=()=>{ cvs.width=innerWidth; cvs.height=innerHeight; };
+sizeCanvas(); addEventListener('resize', sizeCanvas);
+function burst(color,n){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cx=innerWidth/2, cy=innerHeight*0.4;
+  for(let i=0;i<(n||60);i++) parts.push({
+    x:cx,y:cy,vx:(Math.random()-.5)*13,vy:Math.random()*-11-3,r:Math.random()*5+3,
+    rot:Math.random()*6,vr:(Math.random()-.5)*.4,life:1,
+    c:[color,'#FFC53D','#22E6FF','#8CFF45','#FF2D95'][Math.random()*5|0]
+  });
+  if(!rafId) rafId=requestAnimationFrame(drawParts);
+}
+function drawParts(){
+  ctx.clearRect(0,0,cvs.width,cvs.height);
+  parts.forEach(p=>{
+    p.vy+=.35; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; p.life-=.008;
+    ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+    ctx.globalAlpha=Math.max(p.life,0); ctx.fillStyle=p.c;
+    ctx.fillRect(-p.r,-p.r*.6,p.r*2,p.r*1.2); ctx.restore();
+  });
+  parts=parts.filter(p=>p.life>0 && p.y<cvs.height+40);
+  if(parts.length) rafId=requestAnimationFrame(drawParts);
+  else { rafId=null; ctx.clearRect(0,0,cvs.width,cvs.height); }
+}
+function shout(text){
+  const el=$('shout'); el.textContent=text;
+  el.classList.remove('go'); void el.offsetWidth; el.classList.add('go');
+}
+
+/* ---------- real photos from Wikipedia ---------- */
+async function wikiPhoto(title){
+  if(photoCache.has(title)) return photoCache.get(title);
+  const url='https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&redirects=1'+
+            '&prop=pageimages&piprop=thumbnail&pithumbsize=900&titles='+encodeURIComponent(title);
+  let src=null;
+  try{
+    const ctl=new AbortController();
+    const to=setTimeout(()=>ctl.abort(), 6000);
+    const res=await fetch(url,{signal:ctl.signal});
+    clearTimeout(to);
+    const j=await res.json();
+    const pages=j && j.query && j.query.pages;
+    const page=pages && Object.values(pages)[0];
+    src=(page && page.thumbnail && page.thumbnail.source) || null;
+  }catch(e){ src=null; }
+  photoCache.set(title,src);
+  return src;
+}
+const preload = src => new Promise(r=>{ const i=new Image(); i.onload=i.onerror=()=>r(); i.src=src; });
+
+async function probePhotos(){
+  if(!photoMode) return false;
+  if(photosWorking !== null) return photosWorking;
+  const s = await wikiPhoto('Elephant');
+  photosWorking = !!s;
+  return photosWorking;
+}
+
+/* ---------- question building ---------- */
+function pickCandidates(field, level, photoOK){
+  const usable = field.items.filter(it => it.a || (photoOK && !field.noPhoto));
+  const buckets = {1:[],2:[],3:[]};
+  shuffle(usable).forEach(it=>buckets[it.t].push(it));
+  const order = [1,2,3];
+  const take = tier => {
+    if(buckets[tier].length) return buckets[tier].pop();
+    const alt = order.slice().sort((a,b)=>Math.abs(a-tier)-Math.abs(b-tier)).find(t=>buckets[t].length);
+    return alt ? buckets[alt].pop() : null;
+  };
+  const wanted = LEVELS[level].mix.concat(LEVELS[level].mix.slice(0,6)); // 10 + 6 spares
+  const out = [];
+  wanted.forEach(t=>{ const it=take(t); if(it) out.push(it); });
+  return out;
+}
+function makeQuestion(field, item, level){
+  const nChoices = Math.min(LEVELS[level].choices, field.items.length);
+  const sameTier = field.items.filter(i=>i.n!==item.n && i.t===item.t);
+  const other    = field.items.filter(i=>i.n!==item.n && i.t!==item.t);
+  const pool = shuffle(sameTier).concat(shuffle(other));
+  const wrong = pool.slice(0, nChoices-1).map(i=>i.n);
+  return { item, art:item.a, answer:item.n, photo:null, options:shuffle(wrong.concat([item.n])) };
+}
+
+async function prepareTurn(){
+  const p = game.players[game.turn];
+  const field = fieldById(p.cat);
+  const level = p.level;
+  const photoOK = await probePhotos();
+  const cands = pickCandidates(field, level, photoOK);
+
+  let photos = cands.map(()=>null);
+  if(photoOK && !field.noPhoto){
+    photos = await Promise.all(cands.map(it=>wikiPhoto(it.w || it.n)));
+  }
+  const qs = [];
+  for(let i=0;i<cands.length && qs.length<ROUND_LEN;i++){
+    if(photos[i] || cands[i].a){
+      const q = makeQuestion(field, cands[i], level);
+      q.photo = photos[i];
+      qs.push(q);
+    }
+  }
+  await Promise.all(qs.filter(q=>q.photo).slice(0,4).map(q=>preload(q.photo)));
+  qs.filter(q=>q.photo).slice(4).forEach(q=>preload(q.photo));
+  return {field, level, qs, photoOK};
+}
+
+/* ---------- players screen ---------- */
+function renderPlayers(){
+  const g=$('playerGrid'); g.innerHTML='';
+  ROSTER.forEach((p,i)=>{
+    const inGame = selected.includes(i);
+    const lv = LEVELS[levelOf(p.name)];
+    const card=document.createElement('div');
+    card.className='pcard'+(inGame?' in':'')+(p.guest?' wide':'');
+    card.style.borderColor = inGame ? p.color : '';
+    card.innerHTML =
+      '<span class="tick">✅</span>'+
+      '<div class="av">'+p.av+'</div>'+
+      '<div class="nm" style="color:'+p.color+'">'+(p.guest ? 'Someone Else' : p.name)+'</div>'+
+      '<div class="st">'+(inGame?'In the game':'Tap to add')+'</div>'+
+      (p.guest ? '<input class="guestname" id="guestName" type="text" maxlength="14" placeholder="Type a name" autocomplete="off" value="'+(guestName||'')+'">' : '')+
+      '<button class="lvlbtn" style="color:'+lv.color+';border-color:'+lv.color+'">'+lv.label+' ▸</button>';
+
+    card.onclick = e => {
+      if(e.target.classList.contains('lvlbtn') || e.target.classList.contains('guestname')) return;
+      const at=selected.indexOf(i);
+      if(at>-1) selected.splice(at,1); else if(selected.length<5) selected.push(i);
+      beep(selected.includes(i)?720:320,.08);
+      renderPlayers();
+    };
+    card.querySelector('.lvlbtn').onclick = async e => {
+      e.stopPropagation();
+      const cur = LEVEL_ORDER.indexOf(levelOf(p.name));
+      levels[p.name] = LEVEL_ORDER[(cur+1)%LEVEL_ORDER.length];
+      beep(600+cur*90,.08);
+      await store.set(KEY_LEVELS, levels);
+      renderPlayers();
+    };
+    if(p.guest){
+      const inp = card.querySelector('.guestname');
+      inp.oninput = e => { guestName = e.target.value; };
+      inp.onclick = e => e.stopPropagation();
+    }
+    g.appendChild(card);
+  });
+}
+let guestName = '';
+
+/* ---------- category screen ---------- */
+function renderCats(){
+  const p=game.players[game.pick];
+  $('catWho').textContent = p.name+', pick your field';
+  $('catWho').style.color = p.color;
+  $('catSub').textContent = game.players.length>1
+    ? 'Player '+(game.pick+1)+' of '+game.players.length+' · playing '+LEVELS[p.level].label+' · claimed fields are locked out'
+    : 'Playing '+LEVELS[p.level].label+'. One field, one score to beat.';
+  const taken = game.players.filter(x=>x.cat).map(x=>x.cat);
+  const g=$('catGrid'); g.innerHTML='';
+  CATEGORIES.forEach(c=>{
+    const isTaken = taken.includes(c.id);
+    const locked = photosWorking===false && needsPhotos(c);
+    const b=document.createElement('button');
+    b.className='cat'+(isTaken||locked?' taken':''); b.disabled=isTaken||locked;
+    b.innerHTML='<span class="ci">'+c.icon+'</span><span class="cn">'+c.name+'</span>'+
+                '<span class="cc">'+(isTaken?'claimed':locked?'needs photos':c.items.length+' subjects')+'</span>';
+    b.onclick=()=>{
+      p.cat=c.id; beep(880,.1); game.pick++;
+      if(game.pick<game.players.length) renderCats();
+      else { game.pick=0; goReady(); }
+    };
+    g.appendChild(b);
+  });
+}
+
+/* ---------- flow ---------- */
+function startGame(){
+  game = {
+    players: selected.map(i=>{
+      const r=ROSTER[i];
+      const nm = r.guest ? ((guestName||'').trim() || 'Someone Else') : r.name;
+      return {name:nm, color:r.color, av:r.av, level:levelOf(r.name), cat:null};
+    }),
+    pick:0, turn:0, results:[]
+  };
+  resetFloor(); renderCats(); show('s-cats');
+}
+
+async function goReady(){
+  const p=game.players[game.turn];
+  const f=fieldById(p.cat), lv=LEVELS[p.level];
+  $('rdyEyebrow').textContent = game.players.length>1 ? 'PLAYER '+(game.turn+1)+' OF '+game.players.length : 'SOLO RUN';
+  $('rdyName').textContent = p.name.toUpperCase();
+  $('rdyName').style.color = p.color;
+  $('rdyCat').textContent = f.icon+' '+f.name+' · '+lv.label+' · '+ROUND_LEN+' pictures · '+lv.clock+' seconds';
+  $('goStart').disabled = true;
+  $('rdyLoad').textContent = 'Loading pictures…';
+  show('s-ready');
+
+  const prep = await prepareTurn();
+  game.prep = prep;
+  const photoCount = prep.qs.filter(q=>q.photo).length;
+
+  if(prep.qs.length < 5){
+    readyFallback = true;
+    $('rdyLoad').textContent = 'Photos are not loading right now, and this field needs them.';
+    $('goStart').textContent = 'Pick a different field';
+    $('goStart').disabled = false;
+    return;
+  }
+  readyFallback = false;
+  $('goStart').textContent = "I'm ready";
+  $('rdyLoad').textContent =
+    f.noPhoto ? 'Read the face and name the feeling.' :
+    photoCount ? photoCount+' real photos loaded'+(lv.zoom?' · Expert zooms in close':'') :
+    'No photos available, so this round uses icons.';
+  $('goStart').disabled = false;
+}
+
+function beginTurn(){
+  const p=game.players[game.turn];
+  const prep=game.prep, lv=LEVELS[p.level];
+  turn = {
+    player:p, field:prep.field, level:p.level, lv:lv, qs:prep.qs,
+    i:0, score:0, hits:0, streak:0, best:0, marks:[], missed:[],
+    endsAt: performance.now() + lv.clock*1000, over:false
+  };
+  $('pName').textContent = p.name.toUpperCase();
+  $('pDot').style.background = p.color;
+  $('pLvl').textContent = lv.label;
+  $('pLvl').style.color = lv.color;
+  $('pLvl').style.borderColor = lv.color;
+  $('pScore').textContent = '0';
+  show('s-play');
+  renderQuestion();
+  tickHandle = setInterval(tick, 100);
+}
+
+function tick(){
+  const left = Math.max(0,(turn.endsAt-performance.now())/1000);
+  $('pClock').textContent = Math.ceil(left);
+  $('clockFill').style.width = Math.min(100,left/turn.lv.clock*100)+'%';
+  $('clockBar').classList.toggle('low', left<=10);
+  if(left<=10 && Math.ceil(left)!==turn.lastBeep){ turn.lastBeep=Math.ceil(left); beep(1100,.05,'square',.04); }
+  if(left<=0) endTurn('time');
+}
+
+function renderQuestion(){
+  const q=turn.qs[turn.i];
+  $('qno').textContent = String(turn.i+1).padStart(2,'0')+' / '+turn.qs.length;
+  $('combo').textContent = turn.streak>=2 ? '🔥 '+turn.streak+' IN A ROW' : '';
+  $('reveal').textContent = ''; $('reveal').className='reveal';
+
+  const card=$('card');
+  card.querySelectorAll('.art,img.photo').forEach(n=>n.remove());
+  if(q.photo){
+    const img=document.createElement('img');
+    img.className='photo'+(turn.lv.zoom?' zoom':'');
+    img.alt='Mystery picture';
+    if(turn.lv.zoom){
+      const x=20+Math.random()*60, y=20+Math.random()*60;
+      img.style.objectPosition = x+'% '+y+'%';
+    }
+    img.src=q.photo; card.appendChild(img);
+  }else{
+    const d=document.createElement('div');
+    d.className='art'; d.textContent=q.art || turn.field.icon;
+    card.appendChild(d);
+  }
+
+  const dots=$('dots'); dots.innerHTML='';
+  for(let i=0;i<turn.qs.length;i++){
+    const d=document.createElement('i');
+    d.className = turn.marks[i]===true ? 'hit' : turn.marks[i]===false ? 'miss' : (i===turn.i?'now':'');
+    dots.appendChild(d);
+  }
+
+  const box=$('answers'); box.innerHTML='';
+  q.options.forEach((opt,idx)=>{
+    const b=document.createElement('button');
+    b.className='ans'; b.dataset.opt=opt;
+    b.innerHTML='<span class="k">'+(idx+1)+'</span><span>'+opt+'</span>';
+    b.onclick=()=>answer(b,opt);
+    box.appendChild(b);
+  });
+}
+
+function answer(btn,opt){
+  if(turn.over) return;
+  const q=turn.qs[turn.i], right = opt===q.answer, mult=turn.lv.mult;
+  [...$('answers').children].forEach(b=>b.disabled=true);
+
+  if(right){
+    turn.hits++; turn.streak++; turn.best=Math.max(turn.best,turn.streak);
+    const bonus=Math.min((turn.streak-1)*25,100);
+    turn.score += Math.round((100+bonus)*mult);
+    turn.marks[turn.i]=true;
+    btn.classList.add('right');
+    $('card').classList.add('good');
+    $('pScore').textContent = turn.score;
+    $('reveal').textContent = q.answer;
+    $('reveal').className = 'reveal good';
+    sfxGood(Math.min(turn.streak,5));
+    captureTile(turn.player.color);
+    burst(turn.player.color, turn.streak>=3?90:45);
+    shout(turn.streak>=3 ? '🔥 '+turn.streak+' IN A ROW!' : SHOUTS[Math.random()*SHOUTS.length|0]);
+  }else{
+    turn.streak=0; turn.marks[turn.i]=false; turn.missed.push(q.answer);
+    btn.classList.add('wrong');
+    const good=[...$('answers').children].find(b=>b.dataset.opt===q.answer);
+    if(good) good.classList.add('right');
+    $('card').classList.add('bad');
+    $('reveal').textContent = 'It was '+q.answer+(turn.lv.penalty?' · −'+turn.lv.penalty+'s':'');
+    $('reveal').className='reveal bad';
+    turn.endsAt -= turn.lv.penalty*1000;
+    sfxBad();
+  }
+
+  setTimeout(()=>{
+    $('card').classList.remove('good','bad');
+    if(turn.over) return;
+    turn.i++;
+    if(turn.i>=turn.qs.length) endTurn('swept');
+    else renderQuestion();
+  }, right?650:1150);
+}
+
+function endTurn(reason){
+  if(turn.over) return;
+  turn.over=true; clearInterval(tickHandle);
+  const left=Math.max(0,Math.round((turn.endsAt-performance.now())/1000));
+  const timeBonus = reason==='swept' ? Math.round(left*5*turn.lv.mult) : 0;
+  turn.score += timeBonus;
+
+  const rec={
+    name:turn.player.name, color:turn.player.color, level:turn.lv.label, lvColor:turn.lv.color,
+    cat:turn.field.name, icon:turn.field.icon, score:turn.score,
+    hits:turn.hits, total:turn.qs.length, streak:turn.best, left:left,
+    sweep:turn.hits===turn.qs.length, date:new Date().toISOString()
+  };
+  game.results.push(rec); saveScore(rec);
+
+  $('turnWho').textContent = turn.player.name.toUpperCase()+' · '+turn.field.name.toUpperCase()+' · '+turn.lv.label.toUpperCase();
+  $('turnWho').style.color = turn.player.color;
+  $('turnScore').textContent = turn.score;
+  $('turnHits').textContent = turn.hits+'/'+turn.qs.length;
+  $('turnStreak').textContent = turn.best;
+  $('turnTime').textContent = left+'s';
+  $('turnLine').textContent =
+    rec.sweep ? 'Perfect sweep, plus '+timeBonus+' for the leftover time.' :
+    reason==='time' ? 'The clock won with '+(turn.qs.length-turn.i)+' pictures left.' :
+    'Round done, plus '+timeBonus+' for the leftover time.';
+
+  const box=$('turnMissed'); box.innerHTML='';
+  if(turn.missed.length){
+    const lab=document.createElement('div');
+    lab.style.cssText='width:100%;text-align:center;font-size:11px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase';
+    lab.textContent='Ones that got away';
+    box.appendChild(lab);
+    turn.missed.forEach(m=>{
+      const c=document.createElement('div'); c.className='chip'; c.textContent=m; box.appendChild(c);
+    });
+  }
+
+  const last = game.turn===game.players.length-1;
+  $('turnNext').textContent = last ? (game.players.length>1?'See who won':'See my result') : 'Next player';
+  if(turn.hits>=8){ burst(turn.player.color,130); sfxHorn(); }
+  show('s-turn');
+}
+
+function nextAfterTurn(){
+  if(game.turn<game.players.length-1){ game.turn++; goReady(); }
+  else finish();
+}
+
+function finish(){
+  const ranked=game.results.slice().sort((a,b)=> b.score-a.score || b.streak-a.streak || b.left-a.left);
+  const win=ranked[0];
+  if(game.players.length===1){
+    const prior=scores.filter(s=>s.name===win.name && s!==win).map(s=>s.score).sort((a,b)=>b-a)[0];
+    $('finEyebrow').textContent = (prior===undefined || win.score>prior) ? 'NEW PERSONAL BEST' : 'FINAL SCORE';
+  }else $('finEyebrow').textContent='TAKES THE FLOOR';
+  $('finName').textContent=win.name.toUpperCase();
+  $('finName').style.color=win.color;
+
+  const box=$('finPodium'); box.innerHTML='';
+  ranked.forEach((r,i)=>{
+    const row=document.createElement('div');
+    row.className='prow'+(i===0?' win':'');
+    row.innerHTML='<div class="rank">'+(i===0?'👑':i+1)+'</div>'+
+      '<div class="info"><div class="nm" style="color:'+r.color+'">'+r.name+
+      '<span class="badge" style="color:'+r.lvColor+'">'+r.level+'</span></div>'+
+      '<div class="meta">'+r.icon+' '+r.cat+' · '+r.hits+'/'+r.total+' right · best streak '+r.streak+'</div></div>'+
+      '<div class="pts">'+r.score+'</div>';
+    box.appendChild(row);
+  });
+  show('s-final');
+  setTimeout(()=>{ burst(win.color,170); sfxHorn(); shout('👑 '+win.name.toUpperCase()+' WINS!'); },220);
+}
+
+/* ---------- leaderboard ---------- */
+async function saveScore(rec){
+  scores.push(rec); scores=scores.slice(-300);
+  await store.set(KEY_SCORES, scores);
+}
+function fmtDate(iso){
+  const d=new Date(iso);
+  return d.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'2-digit'})+' · '+
+         d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
+}
+function lrow(rank,r,big,label,extra){
+  const el=document.createElement('div');
+  el.className='lrow'+(rank===1?' gold':'');
+  el.innerHTML='<div class="rk">'+(rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank)+'</div>'+
+    '<div><div class="nm" style="color:'+r.color+'">'+r.name+
+    '<span class="badge" style="color:'+(r.lvColor||'#A48FD0')+'">'+(r.level||'—')+'</span></div>'+
+    '<div class="meta">'+r.icon+' '+r.cat+' · '+r.hits+'/'+r.total+' · streak '+r.streak+(r.sweep?' · swept':'')+
+    '<br>'+(extra?extra+' · ':'')+fmtDate(r.date)+'</div></div>'+
+    '<div class="big">'+big+'<small>'+label+'</small></div>';
+  return el;
+}
+function renderBoard(tab){
+  const box=$('lbList'); box.innerHTML='';
+  if(!scores.length){
+    box.innerHTML='<div class="empty">Nothing here yet. Play a round and the first name on this board is yours.</div>';
+    return;
+  }
+  let rows;
+  if(tab==='streak'){
+    rows=scores.slice().sort((a,b)=> b.streak-a.streak || b.score-a.score).slice(0,15)
+      .map((r,i)=>lrow(i+1,r,r.streak+(r.streak>=10?' 🔥':''),'streak'));
+  }else if(tab==='player'){
+    const best={}, count={};
+    scores.forEach(r=>{ count[r.name]=(count[r.name]||0)+1; if(!best[r.name]||r.score>best[r.name].score) best[r.name]=r; });
+    rows=Object.values(best).sort((a,b)=>b.score-a.score)
+      .map((r,i)=>lrow(i+1,r,r.score,'best score',count[r.name]+' turns played'));
+  }else{
+    rows=scores.slice().sort((a,b)=>b.score-a.score).slice(0,15).map((r,i)=>lrow(i+1,r,r.score,'points'));
+  }
+  rows.forEach(r=>box.appendChild(r));
+}
+
+function armDanger(btn, label, action){
+  if(btn.dataset.armed==='1'){ btn.dataset.armed='0'; btn.textContent=label; action(); return; }
+  btn.dataset.armed='1'; btn.textContent='Tap again to confirm';
+  setTimeout(()=>{ if(btn.dataset.armed==='1'){ btn.dataset.armed='0'; btn.textContent=label; } },3500);
+}
+
+/* ---------- wiring ---------- */
+$('goPlay').onclick=()=>{ if(!selected.length) selected=[0]; renderPlayers(); show('s-players'); };
+$('goBoard').onclick=()=>{ document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.tab==='score')); renderBoard('score'); show('s-board'); };
+document.querySelectorAll('.back').forEach(b=> b.onclick=()=>show('s-home'));
+
+$('toCats').onclick=()=>{ if(!selected.length){ shout('PICK A PLAYER'); return; } startGame(); };
+$('catBack').onclick=()=>{ renderPlayers(); show('s-players'); };
+$('goStart').onclick=()=>{
+  if(readyFallback){
+    game.players[game.turn].cat=null;
+    game.pick=game.turn;
+    renderCats(); show('s-cats');
+    return;
+  }
+  beginTurn();
+};
+$('turnNext').onclick=nextAfterTurn;
+$('finAgain').onclick=()=>{ resetFloor(); startGame(); };
+$('finBoard').onclick=()=>{ renderBoard('score'); show('s-board'); };
+$('finHome').onclick=()=>show('s-home');
+
+document.querySelectorAll('.tab').forEach(t=>{
+  t.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===t));
+    renderBoard(t.dataset.tab);
+  };
+});
+$('lbClear').onclick=e=>armDanger(e.target,'Clear the leaderboard',async()=>{
+  scores=[]; await store.set(KEY_SCORES,scores); renderBoard('score');
+});
+
+$('soundBtn').onclick=()=>{ soundOn=!soundOn; $('soundBtn').textContent=soundOn?'🔊':'🔇'; $('soundBtn').classList.toggle('off',!soundOn); if(soundOn) beep(660,.1); };
+$('photoBtn').onclick=()=>{
+  photoMode=!photoMode;
+  $('photoBtn').textContent=photoMode?'📷':'🎨';
+  $('photoBtn').classList.toggle('off',!photoMode);
+  $('photoBtn').title = photoMode?'Real photos on':'Icons only';
+  if(photoMode) photosWorking=null;
+  shout(photoMode?'PHOTOS ON':'ICONS ONLY');
+  if($('s-cats').classList.contains('on')) renderCats();
+};
+
+addEventListener('keydown',e=>{
+  if(!$('s-play').classList.contains('on') || !turn || turn.over) return;
+  const n=parseInt(e.key,10);
+  if(n>=1&&n<=6){ const b=$('answers').children[n-1]; if(b&&!b.disabled) b.click(); }
+});
+
+/* ---------- boot ---------- */
+(async function boot(){
+  buildFloor(); renderPlayers();
+  const s=await store.get(KEY_SCORES); if(Array.isArray(s)) scores=s;
+  const l=await store.get(KEY_LEVELS); if(l&&typeof l==='object') levels=l;
+  renderPlayers();
+  await probePhotos();
+  if($('s-cats').classList.contains('on')) renderCats();
+})();
+</script>
+</body>
+</html>
